@@ -11,7 +11,7 @@ made with create-react-app
 in one terminal run:
 
 ```bash
-npm run server-dev
+npm run server:dev
 
 ```
 
@@ -26,3 +26,4 @@ npm start
 
 this starts the frontend app and opens your browser
 
+## prod 

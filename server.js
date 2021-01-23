@@ -33,5 +33,6 @@ app.put("/api/spireOne/left", (req, res, next) => {
 
 app.put("/api/move", (req, res) => {
   console.log("PUT move");
-  console.log("PUT body");
+  console.log(req.body);
+  // const element =
 });

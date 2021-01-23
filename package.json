@@ -21,7 +21,7 @@
     "test:silent": "react-scripts test --silent --watchAll=false",
     "eject": "react-scripts eject",
     "server": "node server.js",
-    "server-dev": "nodemon server.js"
+    "server:dev": "nodemon server.js"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
