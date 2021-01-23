@@ -1,5 +1,7 @@
 import React from "react";
 
+import SelectedSpireForm from "./SelectedSpireForm.js";
+
 const server = "http://127.0.0.1:8080";
 
 class TowerOfHanoi extends React.Component {
@@ -7,8 +9,13 @@ class TowerOfHanoi extends React.Component {
     super(props);
     this.state = { ping: false, pollingCount: 0, delay: 500 };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.selectSpireHandler = this.selectSpireHandler.bind(this);
+  }
+
+  selectSpireHandler(spireId) {
+    this.setState({
+      selectedSpire: spireId,
+    });
   }
 
   componentWillMount() {
@@ -82,15 +89,6 @@ class TowerOfHanoi extends React.Component {
     });
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  handleSubmit(event) {
-    alert("Your favorite flavor is: " + this.state.value);
-    event.preventDefault();
-  }
-
   render() {
     return (
       <div>
@@ -110,20 +108,10 @@ class TowerOfHanoi extends React.Component {
           <button type="button" onClick={() => this.move("up")}>
             Move Block on Selected Spire to Target Spire
           </button>
-
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Pick your favorite flavor:
-              <select value={this.state.value} onChange={this.handleChange}>
-                {" "}
-                <option value="grapefruit">Grapefruit</option>
-                <option value="lime">Lime</option>
-                <option value="coconut">Coconut</option>
-                <option value="mango">Mango</option>
-              </select>
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
+          <SelectedSpireForm
+            handler={this.selectSpireHandler}
+            selectedSpire={this.state.selectedSpire}
+          />
         </div>
       </div>
     );
