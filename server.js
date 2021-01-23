@@ -14,7 +14,7 @@ app.listen(port, () => {
 });
 
 const gameState = {
-  0: [1, 2, 3, 4],
+  0: [4, 3, 2, 1],
   1: [],
   2: [],
 };
@@ -36,13 +36,56 @@ app.get("/api/gameState", (req, res) => {
 
 // move a stone from selectedSpire to targetSpire
 app.put("/api/move", (req, res) => {
-  console.log("PUT move");
-  console.log(req.body);
+  console.log(`PUT move ${req.body}`);
+
+  let error = false;
 
   const { selectedSpire, targetSpire } = req.body;
-  const element = gameState[selectedSpire].pop();
-  element ? gameState[targetSpire].push(element) : null;
 
-  console.log(JSON.stringify(gameState));
-  res.send(JSON.stringify(gameState));
+  // validate move
+
+  const selectedSpireLength = gameState[selectedSpire].length;
+  const selectedSpireTopStone =
+    gameState[selectedSpire][selectedSpireLength - 1];
+  console.log(`Selected spire top stone ${selectedSpireTopStone}`);
+
+  let targetSpireTopStone = null;
+  const targetSpireLength = gameState[targetSpire].length;
+  targetSpireLength != 0
+    ? (targetSpireTopStone = gameState[targetSpire][targetSpireLength - 1])
+    : null;
+
+  console.log(`Target Spire top stone ${targetSpireTopStone}`);
+
+  // bad move if selected spire is empty
+  if (selectedSpireLength == 0) {
+    error = true;
+    res.status(400).send(JSON.stringify({ error: "Selected Spire is Empty!" }));
+  }
+
+  // bad move if target and selected are the same
+  if (selectedSpire == targetSpire) {
+    error = true;
+    res
+      .status(400)
+      .send(JSON.stringify({ error: "Must target a different Spire!" }));
+  }
+
+  // bad move if target spire has smaller stone on top
+  if (targetSpireTopStone && targetSpireTopStone < selectedSpireTopStone) {
+    error = true;
+    res
+      .status(400)
+      .send(
+        JSON.stringify({ error: "Cannot move a stone on top of smaller stone" })
+      );
+  }
+
+  if (!error) {
+    const element = gameState[selectedSpire].pop();
+    element ? gameState[targetSpire].push(element) : null;
+
+    console.log(JSON.stringify(gameState));
+    res.send(JSON.stringify(gameState));
+  }
 });

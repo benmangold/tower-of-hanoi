@@ -1,21 +1,27 @@
 import React from "react";
 
-import SelectedSpireForm from "./SelectedSpireForm.js";
+import SelectSpireForm from "./SelectedSpireForm.js";
 
 const server = "http://127.0.0.1:8080";
 
 class TowerOfHanoi extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ping: false, pollingCount: 0, delay: 500 };
+    this.state = { ping: false, pollingCount: 0, delay: 500, victory: false };
 
+    this.move = this.move.bind(this);
     this.selectSpireHandler = this.selectSpireHandler.bind(this);
+    this.targetSpireHandler = this.targetSpireHandler.bind(this);
   }
 
   selectSpireHandler(spireId) {
     this.setState({
       selectedSpire: spireId,
     });
+  }
+
+  targetSpireHandler(spireId) {
+    this.setState({ targetSpire: spireId });
   }
 
   componentWillMount() {
@@ -29,12 +35,12 @@ class TowerOfHanoi extends React.Component {
         console.log(json);
         this.setState({
           ping: true,
-          spireOne: json["0"],
-          spireTwo: json["1"],
-          spireThree: json["2"],
+          spireZero: json["0"],
+          spireOne: json["1"],
+          spireTwo: json["2"],
           playerId: json.playerId,
           selectedSpire: 0,
-          targetSpire: 1,
+          targetSpire: 0,
         });
       });
   }
@@ -52,9 +58,9 @@ class TowerOfHanoi extends React.Component {
       })
       .then((json) => {
         this.setState({
-          spireOne: json["0"],
-          spireTwo: json["1"],
-          spireThree: json["2"],
+          spireZero: json["0"],
+          spireOne: json["1"],
+          spireTwo: json["2"],
         });
       });
 
@@ -80,42 +86,70 @@ class TowerOfHanoi extends React.Component {
       }),
     });
     const json = await rawResponse.json();
-
+    if (json.error) {
+      alert(json.error);
+    }
     console.log(json);
     this.setState({
-      spireOne: json["0"],
-      spireTwo: json["1"],
-      spireThree: json["2"],
+      spireZero: json["0"],
+      spireOne: json["1"],
+      spireTwo: json["2"],
     });
   }
 
   render() {
     return (
       <div>
-        <div>
-          <p>
-            <b>Game State</b>
-          </p>
-          <p>spireOne : {this.state.spireOne}</p>
-          <p>spireTwo : {this.state.spireTwo}</p>
-          <p>spireThree : {this.state.spireThree}</p>
-          <p>playerId : {this.state.playerId}</p>
-          <p>selectedSpire : {this.state.selectedSpire}</p>
-          <p>targetSpire : {this.state.targetSpire}</p>
-          <p>pollingCount: {this.state.pollingCount}</p>
-        </div>
-        <div>
-          <button type="button" onClick={() => this.move("up")}>
-            Move Block on Selected Spire to Target Spire
-          </button>
-          <SelectedSpireForm
-            handler={this.selectSpireHandler}
-            selectedSpire={this.state.selectedSpire}
-          />
-        </div>
+        <DebugMenu state={this.state} />
+        <MoveMenu
+          state={this.state}
+          move={this.move}
+          selectSpireHandler={this.selectSpireHandler}
+          targetSpireHandler={this.targetSpireHandler}
+        />
       </div>
     );
   }
 }
 
 export default TowerOfHanoi;
+
+const MoveMenu = (props) => {
+  return (
+    <span>
+      <SelectSpireForm
+        text="Selected Spire: "
+        handler={props.selectSpireHandler}
+        selectedSpire={props.state.selectedSpire}
+      />
+
+      <SelectSpireForm
+        text="Target Spire: "
+        handler={props.targetSpireHandler}
+        selectedSpire={props.state.selectedSpire}
+      />
+      <button type="button" onClick={props.move}>
+        Move
+      </button>
+    </span>
+  );
+};
+
+const DebugMenu = (props) => {
+  return (
+    <div>
+      <div>
+        <p>
+          <b>Game State</b>
+        </p>
+        <p>spireZero : {props.state.spireZero}</p>
+        <p>spireOne : {props.state.spireOne}</p>
+        <p>spireTwo : {props.state.spireTwo}</p>
+        <p>playerId : {props.state.playerId}</p>
+        <p>selectedSpire : {props.state.selectedSpire}</p>
+        <p>targetSpire : {props.state.targetSpire}</p>
+        <p>pollingCount: {props.state.pollingCount}</p>
+      </div>
+    </div>
+  );
+};
