@@ -11,13 +11,25 @@ class TowerOfHanoi extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  handleSubmit(event) {
-    alert("Your favorite flavor is: " + this.state.value);
-    event.preventDefault();
+  componentWillMount() {
+    fetch(`${server}/api/initState`, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        console.log(json);
+        this.setState({
+          ping: true,
+          spireOne: json["0"],
+          spireTwo: json["1"],
+          spireThree: json["2"],
+          playerId: json.playerId,
+          selectedSpire: 0,
+          targetSpire: 1,
+        });
+      });
   }
 
   componentDidMount() {
@@ -32,9 +44,7 @@ class TowerOfHanoi extends React.Component {
         return response.json();
       })
       .then((json) => {
-        console.log(json);
         this.setState({
-          ping: true,
           spireOne: json["0"],
           spireTwo: json["1"],
           spireThree: json["2"],
@@ -45,7 +55,6 @@ class TowerOfHanoi extends React.Component {
       pollingCount: this.state.pollingCount + 1,
     });
   };
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -73,25 +82,13 @@ class TowerOfHanoi extends React.Component {
     });
   }
 
-  componentWillMount() {
-    fetch(`${server}/api/initState`, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        console.log(json);
-        this.setState({
-          ping: true,
-          spireOne: json["0"],
-          spireTwo: json["1"],
-          spireThree: json["2"],
-          playerId: json.playerId,
-          selectedSpire: 0,
-          targetSpire: 1,
-        });
-      });
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit(event) {
+    alert("Your favorite flavor is: " + this.state.value);
+    event.preventDefault();
   }
 
   render() {
