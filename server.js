@@ -14,25 +14,35 @@ app.listen(port, () => {
 });
 
 const gameState = {
-  spireOne: [1, 2, 3, 4],
-  spireTwo: [],
-  spireThree: [],
+  0: [1, 2, 3, 4],
+  1: [],
+  2: [],
 };
 
-app.get("/api/gameState", (req, res) => {
+let players = 0;
+
+app.get("/api/initState", (req, res) => {
   console.log("GET gameState");
+  const initState = gameState;
+  initState.playerId = players;
+  players++;
+  console.log(JSON.stringify(initState));
+  res.send(JSON.stringify(initState));
+});
+
+app.get("/api/gameState", (req, res) => {
   res.send(JSON.stringify(gameState));
 });
 
-app.put("/api/spireOne/left", (req, res, next) => {
-  console.log("PUT spireOne left");
-  console.log(req.body);
-  console.log(JSON.stringify(gameState));
-  res.send(req.body);
-});
-
+// move a stone from selectedSpire to targetSpire
 app.put("/api/move", (req, res) => {
   console.log("PUT move");
   console.log(req.body);
-  // const element =
+
+  const { selectedSpire, targetSpire } = req.body;
+  const element = gameState[selectedSpire].pop();
+  element ? gameState[targetSpire].push(element) : null;
+
+  console.log(JSON.stringify(gameState));
+  res.send(JSON.stringify(gameState));
 });
