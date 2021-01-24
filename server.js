@@ -60,25 +60,19 @@ app.put("/api/move", (req, res) => {
   // bad move if selected spire is empty
   if (selectedSpireLength == 0) {
     error = true;
-    res.status(400).send(JSON.stringify({ error: "Selected Spire is Empty!" }));
+    res.status(400).send(JSON.stringify({ error: "CROSS THE RIVERS" }));
   }
 
   // bad move if target and selected are the same
   if (selectedSpire == targetSpire) {
     error = true;
-    res
-      .status(400)
-      .send(JSON.stringify({ error: "Must target a different Spire!" }));
+    res.status(400).send(JSON.stringify({ error: "CROSS THE RIVERS" }));
   }
 
   // bad move if target spire has smaller stone on top
   if (targetSpireTopStone && targetSpireTopStone < selectedSpireTopStone) {
     error = true;
-    res
-      .status(400)
-      .send(
-        JSON.stringify({ error: "Cannot move a stone on top of smaller stone" })
-      );
+    res.status(400).send(JSON.stringify({ error: "CROSS THE RIVERS" }));
   }
 
   if (!error) {

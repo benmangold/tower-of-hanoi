@@ -9,9 +9,7 @@ import TowerOfHanoi from "./components/TowerOfHanoi.js";
 function App() {
   return (
     <div className="App">
-      {/* <RestController /> */}
       <TowerOfHanoi />
-      {/* <Canvas /> */}
     </div>
   );
 }

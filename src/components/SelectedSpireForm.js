@@ -19,9 +19,9 @@ class SelectSpireForm extends React.Component {
           {this.props.text}
           <select value={this.props.value} onChange={this.handleChange}>
             selectedSpire
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
+            <option value="0"></option>
+            <option value="1">~</option>
+            <option value="2">~~</option>
           </select>
         </label>
       </form>

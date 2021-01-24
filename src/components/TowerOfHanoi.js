@@ -12,7 +12,7 @@ class TowerOfHanoi extends React.Component {
       pollingCount: 0,
       delay: 500,
       victory: false,
-      debug: true,
+      debug: false,
     };
 
     this.move = this.move.bind(this);
@@ -20,17 +20,29 @@ class TowerOfHanoi extends React.Component {
     this.targetSpireHandler = this.targetSpireHandler.bind(this);
   }
 
-  selectSpireHandler(spireId) {
-    this.setState({
-      selectedSpire: spireId,
-    });
-  }
+  // componentWillMount() {
+  //   fetch(`${server}/api/initState`, {
+  //     method: "GET",
+  //   })
+  //   .then((response) => {
+  //     return response.json();
+  //   })
+  //   .then((json) => {
+  //     console.log(json);
+  //     this.setState({
+  //       ping: true,
+  //       spireZero: json["0"],
+  //       spireOne: json["1"],
+  //       spireTwo: json["2"],
+  //         playerId: json.playerId,
+  //         selectedSpire: 0,
+  //         targetSpire: 0,
+  //       });
+  //     });
+  //   }
 
-  targetSpireHandler(spireId) {
-    this.setState({ targetSpire: spireId });
-  }
-
-  componentWillMount() {
+  componentDidMount() {
+    this.interval = setInterval(this.tick, this.state.delay);
     fetch(`${server}/api/initState`, {
       method: "GET",
     })
@@ -49,10 +61,6 @@ class TowerOfHanoi extends React.Component {
           targetSpire: 0,
         });
       });
-  }
-
-  componentDidMount() {
-    this.interval = setInterval(this.tick, this.state.delay);
   }
 
   tick = async () => {
@@ -103,12 +111,22 @@ class TowerOfHanoi extends React.Component {
     });
   }
 
+  selectSpireHandler(spireId) {
+    this.setState({
+      selectedSpire: spireId,
+    });
+  }
+
+  targetSpireHandler(spireId) {
+    this.setState({ targetSpire: spireId });
+  }
+
   render() {
     return (
       <div>
         {this.state.ping == false ? <image src="{server}/spinner.gif" /> : null}
         {this.state.debug ? <DebugMenu state={this.state} /> : null}
-
+        <Game state={this.state} />
         <MoveMenu
           state={this.state}
           move={this.move}
@@ -126,18 +144,16 @@ const MoveMenu = (props) => {
   return (
     <div>
       <SelectSpireForm
-        text="Selected Spire: "
         handler={props.selectSpireHandler}
         selectedSpire={props.state.selectedSpire}
       />
 
       <SelectSpireForm
-        text="Target Spire: "
         handler={props.targetSpireHandler}
         selectedSpire={props.state.selectedSpire}
       />
       <button type="button" onClick={props.move}>
-        Move
+        ~
       </button>
     </div>
   );
@@ -154,9 +170,22 @@ const DebugMenu = ({ state }) => {
         <p>spireOne : {state.spireOne}</p>
         <p>spireTwo : {state.spireTwo}</p>
         <p>playerId : {state.playerId}</p>
-        <p>selectedSpire : {state.selectedSpire}</p>
-        <p>targetSpire : {state.targetSpire}</p>
         <p>pollingCount: {state.pollingCount}</p>
+      </div>
+    </div>
+  );
+};
+
+const Game = ({ state }) => {
+  return (
+    <div>
+      <div>
+        <p>{state.spireZero}</p>
+        <p>~~~~~~~~~~~~~~~~~~~</p>
+        <p>{state.spireOne}</p>
+        <p>~~~~~~~~~~~~~~~~~~~</p>
+        <p>~~~~~~~~~~~~~~~~~~~</p>
+        <p>{state.spireTwo}</p>
       </div>
     </div>
   );
