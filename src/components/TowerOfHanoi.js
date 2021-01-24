@@ -7,7 +7,13 @@ const server = "http://127.0.0.1:8080";
 class TowerOfHanoi extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ping: false, pollingCount: 0, delay: 500, victory: false };
+    this.state = {
+      ping: false,
+      pollingCount: 0,
+      delay: 500,
+      victory: false,
+      debug: true,
+    };
 
     this.move = this.move.bind(this);
     this.selectSpireHandler = this.selectSpireHandler.bind(this);
@@ -100,7 +106,9 @@ class TowerOfHanoi extends React.Component {
   render() {
     return (
       <div>
-        <DebugMenu state={this.state} />
+        {this.state.ping == false ? <image src="{server}/spinner.gif" /> : null}
+        {this.state.debug ? <DebugMenu state={this.state} /> : null}
+
         <MoveMenu
           state={this.state}
           move={this.move}
@@ -116,7 +124,7 @@ export default TowerOfHanoi;
 
 const MoveMenu = (props) => {
   return (
-    <span>
+    <div>
       <SelectSpireForm
         text="Selected Spire: "
         handler={props.selectSpireHandler}
@@ -131,24 +139,24 @@ const MoveMenu = (props) => {
       <button type="button" onClick={props.move}>
         Move
       </button>
-    </span>
+    </div>
   );
 };
 
-const DebugMenu = (props) => {
+const DebugMenu = ({ state }) => {
   return (
     <div>
       <div>
         <p>
           <b>Game State</b>
         </p>
-        <p>spireZero : {props.state.spireZero}</p>
-        <p>spireOne : {props.state.spireOne}</p>
-        <p>spireTwo : {props.state.spireTwo}</p>
-        <p>playerId : {props.state.playerId}</p>
-        <p>selectedSpire : {props.state.selectedSpire}</p>
-        <p>targetSpire : {props.state.targetSpire}</p>
-        <p>pollingCount: {props.state.pollingCount}</p>
+        <p>spireZero : {state.spireZero}</p>
+        <p>spireOne : {state.spireOne}</p>
+        <p>spireTwo : {state.spireTwo}</p>
+        <p>playerId : {state.playerId}</p>
+        <p>selectedSpire : {state.selectedSpire}</p>
+        <p>targetSpire : {state.targetSpire}</p>
+        <p>pollingCount: {state.pollingCount}</p>
       </div>
     </div>
   );
